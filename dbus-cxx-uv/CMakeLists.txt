@@ -12,7 +12,7 @@
 #   You should have received a copy of the GNU General Public License
 #   along with this software. If not see <http://www.gnu.org/licenses/>.
 
-pkg_search_module( LIBUV REQUIRED libuv )
+pkg_search_module( LIBUV REQUIRED libuv-static )
 
 set( dbus-cxx-uv-headers dbus-cxx-uv.h uvdispatcher.h )
 set( dbus-cxx-uv-sources dbus-cxx-uv.cpp uvdispatcher.cpp )
@@ -52,7 +52,7 @@ SET(PKG_CONFIG_CFLAGS
     "-I\${includedir}"
 )
 SET(PKG_CONFIG_REQUIRES
-    "dbus-cxx-2.0, libuv"
+    "dbus-cxx-2.0, libuv-static"
 )
 
 CONFIGURE_FILE(
