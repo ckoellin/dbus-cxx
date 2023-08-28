@@ -11,14 +11,16 @@
 #                                                                         
 #   You should have received a copy of the GNU General Public License     
 #   along with this software. If not see <http://www.gnu.org/licenses/>.  
-cmake_minimum_required( VERSION 3.12 )
+cmake_minimum_required( VERSION 3.15 )
 project( dbus-cxx VERSION 2.4.0 )
 
 list(APPEND CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake-modules")
 
 include( CheckIncludeFiles )
 include( GNUInstallDirs )
+if( NOT CMAKE_TOOLCHAIN_FILE )
 include( FindPkgConfig )
+endif( NOT CMAKE_TOOLCHAIN_FILE )
 include( CheckTypeSize )
 include( CTest )
 include( CheckCXXSymbolExists )
@@ -35,7 +37,14 @@ set( DBUS_CXX_INCLUDE_VERSION 2.0 )
 set( PKG_VERSION ${dbus-cxx_VERSION} )
 
 # Our required dependencies: libsigc++ 3.0
+if( CMAKE_TOOLCHAIN_FILE )
+find_package( sigc++-3 REQUIRED )
+set ( sigc_INCLUDE_DIRS "${sigc++-3_INCLUDE_DIRS}" )
+set ( sigc_LIBRARIES "${sigc++-3_LIBRARIES}" )
+set ( sigc_LDFLAGS "${sigc++-3_LIBRARIES}" )
+else()
 pkg_check_modules( sigc REQUIRED sigc++-3.0 )
+endif( CMAKE_TOOLCHAIN_FILE )
 
 #
 # Check our options
@@ -366,7 +375,12 @@ endif( ENABLE_EXAMPLES )
 # Include the directory for the tools
 #
 if( ENABLE_TOOLS )
+    if( CMAKE_TOOLCHAIN_FILE )
+    find_package( expat REQUIRED )
+    set ( expat_LDFLAGS "${expat_LIBRARIES}" )
+    else()
     pkg_check_modules( expat REQUIRED expat )
+    endif( CMAKE_TOOLCHAIN_FILE )
     add_subdirectory( tools )
 endif( ENABLE_TOOLS )
 
@@ -398,7 +412,12 @@ endif( BUILD_SITE )
 # Check if tests are enabled
 #
 if( BUILD_TESTING )
+    if( CMAKE_TOOLCHAIN_FILE )
+    find_package( expat REQUIRED )
+    set ( expat_LDFLAGS "${expat_LIBRARIES}" )
+    else()
     pkg_check_modules( expat REQUIRED expat )
+    endif( CMAKE_TOOLCHAIN_FILE )
     add_subdirectory( unit-tests )
     if( ENABLE_TOOLS )
         add_subdirectory( unit-tests/tools-tests )
