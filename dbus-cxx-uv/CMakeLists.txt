@@ -12,7 +12,11 @@
 #   You should have received a copy of the GNU General Public License
 #   along with this software. If not see <http://www.gnu.org/licenses/>.
 
+if( CMAKE_TOOLCHAIN_FILE )
+find_package( libuv REQUIRED )
+else()
 pkg_search_module( LIBUV REQUIRED libuv-static )
+endif( CMAKE_TOOLCHAIN_FILE )
 
 set( dbus-cxx-uv-headers dbus-cxx-uv.h uvdispatcher.h )
 set( dbus-cxx-uv-sources dbus-cxx-uv.cpp uvdispatcher.cpp )
@@ -35,6 +39,7 @@ if( BUILD_TESTING )
     #add_subdirectory( unit-tests )
 endif( BUILD_TESTING )
 
+if( NOT CMAKE_TOOLCHAIN_FILE )
 #
 # pkg-config script creation and install
 #
@@ -61,6 +66,7 @@ CONFIGURE_FILE(
 
 INSTALL( FILES "${CMAKE_CURRENT_BINARY_DIR}/dbus-cxx-uv-2.0.pc"
         DESTINATION "${CMAKE_INSTALL_LIBDIR}/pkgconfig")
+endif( NOT CMAKE_TOOLCHAIN_FILE )
 
 #
 # Library install information
